@@ -1,6 +1,7 @@
 import express from 'express';
-import morgan from 'morgan';
 import cors from 'cors';
+import morgan from 'morgan';
+import { ProductRouter } from './product/product.router';
 
 class ServerBoosrap {
   public app: express.Application = express();
@@ -13,12 +14,17 @@ class ServerBoosrap {
     this.app.use(cors());
     this.app.use(morgan('dev'));
 
+    this.app.use('/api', this.routers());
     this.listen();
+  }
+
+  routers(): Array<express.Router> {
+    return [new ProductRouter().router];
   }
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`Server running on port localhost:${this.port}`);
+      console.log(`Server running on port http://localhost:${this.port}`);
     });
   }
 }
