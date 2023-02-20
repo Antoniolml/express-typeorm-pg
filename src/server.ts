@@ -2,12 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { ProductRouter } from './product/product.router';
+import { ConfigServer } from './config/config';
 
-class ServerBoosrap {
+class ServerBoosrap extends ConfigServer {
   public app: express.Application = express();
-  public port: number = 3000;
+  public port: number = this.getNumberEnv('PORT') || 3000;
 
   constructor() {
+    super();
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
