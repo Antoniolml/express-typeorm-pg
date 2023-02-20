@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { ProductRouter } from './product/product.router';
+import { ProductRouter } from './products/product.router';
 import { ConfigServer } from './config/config';
 import { DataSource } from 'typeorm';
 
