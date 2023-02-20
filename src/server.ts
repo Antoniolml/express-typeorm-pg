@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { ProductRouter } from './product/product.router';
 import { ConfigServer } from './config/config';
+import { DataSource } from 'typeorm';
 
 class ServerBoosrap extends ConfigServer {
   public app: express.Application = express();
@@ -16,12 +17,22 @@ class ServerBoosrap extends ConfigServer {
     this.app.use(cors());
     this.app.use(morgan('dev'));
 
+    this.dbConnect();
+
     this.app.use('/api', this.routers());
     this.listen();
   }
 
   routers(): Array<express.Router> {
     return [new ProductRouter().router];
+  }
+
+  async dbConnect(): Promise<DataSource | void> {
+    return await this.initConnect
+      .then(() => {
+        console.log('Database connected');
+      })
+      .catch((err) => console.log(err));
   }
 
   public listen() {
