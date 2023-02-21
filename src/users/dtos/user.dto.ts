@@ -6,8 +6,8 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { BaseDto } from '../../config/base.entity';
-import { CustomerEntity } from '../../customers/entities/customer.entity';
+import { BaseDto } from '../../config/base.dto';
+import { CustomerEntity } from '../entities/customer.entity';
 
 export class UserDTO extends BaseDto {
   @IsString()

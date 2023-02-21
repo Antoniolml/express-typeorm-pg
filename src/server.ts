@@ -4,6 +4,8 @@ import morgan from 'morgan';
 import { ProductRouter } from './products/product.router';
 import { ConfigServer } from './config/config';
 import { DataSource } from 'typeorm';
+import { CategoryRouter } from './products/category.router';
+import { BrandRouter } from './products/brand.router';
 
 class ServerBoosrap extends ConfigServer {
   public app: express.Application = express();
@@ -24,7 +26,11 @@ class ServerBoosrap extends ConfigServer {
   }
 
   routers(): Array<express.Router> {
-    return [new ProductRouter().router];
+    return [
+      new ProductRouter().router,
+      new CategoryRouter().router,
+      new BrandRouter().router,
+    ];
   }
 
   async dbConnect(): Promise<DataSource | void> {

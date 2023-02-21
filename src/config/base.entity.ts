@@ -1,15 +1,22 @@
-import { IsDate, IsOptional, IsUUID } from 'class-validator';
+import {
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-export class BaseDto {
-  @IsOptional()
-  @IsUUID()
+export abstract class BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @IsDate()
-  @IsOptional()
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
+  })
   createdAt!: Date;
 
-  @IsDate()
-  @IsOptional()
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
+  })
   updatedAt!: Date;
 }

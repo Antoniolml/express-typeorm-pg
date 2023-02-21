@@ -6,11 +6,11 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { BrandEntity } from '../../Brands/entities/brand.entity';
-import { CategoryEntity } from '../../categories/entities/category.entity';
-import { BaseDto } from '../../config/base.entity';
+import { BrandEntity } from '../entities/brand.entity';
+import { CategoryEntity } from '../entities/category.entity';
+import { BaseDto } from '../../config/base.dto';
 
-export class PrdocutDTO extends BaseDto {
+export class ProductDTO extends BaseDto {
   @IsString()
   @IsNotEmpty()
   name!: string;

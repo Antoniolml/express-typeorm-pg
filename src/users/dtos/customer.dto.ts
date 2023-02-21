@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
-import { BaseDto } from '../../config/base.entity';
+import { BaseDto } from '../../config/base.dto';
 
 export class CustomerDTO extends BaseDto {
   @IsString()

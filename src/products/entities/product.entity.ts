@@ -6,9 +6,9 @@ import {
   ManyToMany,
   ManyToOne,
 } from 'typeorm';
-import { BrandEntity } from '../../Brands/entities/brand.entity';
-import { CategoryEntity } from '../../categories/entities/category.entity';
-import { BaseEntity } from '../../config/base.dto';
+import { BrandEntity } from './brand.entity';
+import { CategoryEntity } from './category.entity';
+import { BaseEntity } from '../../config/base.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity extends BaseEntity {

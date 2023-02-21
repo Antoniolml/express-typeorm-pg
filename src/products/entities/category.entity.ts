@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany } from 'typeorm';
-import { BaseEntity } from '../../config/base.dto';
-import { ProductEntity } from '../../products/entities/product.entity';
+import { BaseEntity } from '../../config/base.entity';
+import { ProductEntity } from './product.entity';
 
 @Entity({ name: 'categories' })
 export class CategoryEntity extends BaseEntity {

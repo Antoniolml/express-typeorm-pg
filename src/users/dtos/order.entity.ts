@@ -1,7 +1,7 @@
 import { Entity, ManyToMany } from 'typeorm';
-import { BaseEntity } from '../../config/base.dto';
-import { CustomerEntity } from '../../customers/entities/customer.entity';
-import { OrderItemEntity } from '../../order-items/entities/order-item.entity';
+import { BaseEntity } from '../../config/base.entity';
+import { CustomerEntity } from '../entities/customer.entity';
+import { OrderItemEntity } from '../entities/order-item.entity';
 
 @Entity({ name: 'orders' })
 export class OrderEntity extends BaseEntity {

@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToMany, ManyToOne, OneToOne } from 'typeorm';
-import { BaseEntity } from '../../config/base.dto';
-import { OrderEntity } from '../../orders/entities/order.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { BaseEntity } from '../../config/base.entity';
+import { OrderEntity } from '../dtos/order.entity';
+import { UserEntity } from './user.entity';
 
 @Entity({ name: 'customers' })
 export class CustomerEntity extends BaseEntity {
