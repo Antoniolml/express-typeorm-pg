@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 import { BaseDto } from '../../config/base.dto';
+import { OrderEntity } from '../entities/order.entity';
+import { UserEntity } from '../entities/user.entity';
 
 export class CustomerDTO extends BaseDto {
   @IsString()
@@ -14,6 +16,11 @@ export class CustomerDTO extends BaseDto {
   @IsNotEmpty()
   phone!: string;
 
-  user!: string;
-  order!: string;
+  @IsString()
+  @IsNotEmpty()
+  user!: UserEntity;
+
+  @IsString()
+  @IsNotEmpty()
+  order!: OrderEntity;
 }

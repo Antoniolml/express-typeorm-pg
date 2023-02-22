@@ -1,9 +1,13 @@
 import { BaseRouter } from '../shared/router/router';
 import { ProductController } from './controllers/product.controllers';
+import { ProductMiddleware } from './middlewares/product.middleware';
 
-export class ProductRouter extends BaseRouter<ProductController> {
+export class ProductRouter extends BaseRouter<
+  ProductController,
+  ProductMiddleware
+> {
   constructor() {
-    super(ProductController);
+    super(ProductController, ProductMiddleware);
   }
 
   routes(): void {
@@ -13,8 +17,10 @@ export class ProductRouter extends BaseRouter<ProductController> {
     this.router.get('/products/:id', (req, res) =>
       this.controller.GetProductById(req, res)
     );
-    this.router.post('/products', (req, res) =>
-      this.controller.CreateProduct(req, res)
+    this.router.post(
+      '/products',
+      (req, res, next) => [this.middleware.productValidator(req, res, next)],
+      (req, res) => this.controller.CreateProduct(req, res)
     );
     this.router.put('/products/:id', (req, res) =>
       this.controller.UpdateProduct(req, res)

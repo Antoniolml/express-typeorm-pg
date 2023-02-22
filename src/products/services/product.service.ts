@@ -13,7 +13,10 @@ export class ProductService extends BaseService<ProductEntity> {
   }
 
   async findProductById(id: string): Promise<ProductEntity | null> {
-    return (await this.execRepository).findOneBy({ id });
+    return (await this.execRepository).findOne({
+      where: { id },
+      relations: ['brand', 'categories'],
+    });
   }
 
   async createProduct(body: ProductDTO): Promise<ProductEntity> {
