@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../config/base.entity';
 import { OrderEntity } from './order.entity';
 import { ProductEntity } from '../../products/entities/product.entity';
@@ -8,9 +8,14 @@ export class OrderItemEntity extends BaseEntity {
   @Column({ type: 'int' })
   quantity!: number;
 
-  @ManyToOne(() => OrderEntity, (order) => order.items)
+  @Column()
+  totalPrice!: number;
+
+  @ManyToOne(() => OrderEntity, (order) => order.Orderitems)
+  @JoinColumn({ name: 'order_id' })
   order!: OrderEntity;
 
-  @ManyToOne(() => ProductEntity)
+  @ManyToOne(() => ProductEntity, (product) => product.orderItems)
+  @JoinColumn({ name: 'product_id' })
   product!: ProductEntity;
 }

@@ -13,15 +13,15 @@ export class ProductService extends BaseService<ProductEntity> {
   }
 
   async findProductById(id: string): Promise<ProductEntity | null> {
-    return (await this.execRepository).findOne({
-      where: { id },
-      relations: ['brand', 'categories'],
-    });
+    return (await this.execRepository).findOneBy({ id });
   }
 
   async createProduct(body: ProductDTO): Promise<ProductEntity> {
-    const newProduct = (await this.execRepository).create(body);
-    return (await this.execRepository).save(newProduct);
+    return (await this.execRepository).save(body);
+  }
+
+  async deleteProduct(id: string): Promise<DeleteResult> {
+    return (await this.execRepository).delete(id);
   }
 
   async updateProduct(
@@ -29,9 +29,5 @@ export class ProductService extends BaseService<ProductEntity> {
     infoUpdate: ProductDTO
   ): Promise<UpdateResult> {
     return (await this.execRepository).update(id, infoUpdate);
-  }
-
-  async deleteProduct(id: string): Promise<DeleteResult> {
-    return (await this.execRepository).delete(id);
   }
 }

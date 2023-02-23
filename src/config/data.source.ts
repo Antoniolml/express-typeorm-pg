@@ -18,7 +18,7 @@ const config: DataSourceOptions = {
   database: process.env.POSTGRES_DB,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-  synchronize: true,
+  synchronize: false,
   migrationsRun: true,
   logging: false,
   namingStrategy: new SnakeNamingStrategy(),

@@ -1,28 +1,32 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { BaseDto } from '../../config/base.dto';
-import { CustomerEntity } from '../entities/customer.entity';
 
 export class UserDTO extends BaseDto {
+  @IsNotEmpty()
   @IsString()
+  name!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastName!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  userName!: string;
+
+  @IsNotEmpty()
   @IsEmail()
   email!: string;
 
-  @IsString()
   @IsNotEmpty()
-  @Length(18)
   password!: string;
 
-  @IsString()
-  role!: string;
+  @IsNotEmpty()
+  city!: string;
 
-  @IsOptional()
-  @IsPositive()
-  customer!: CustomerEntity;
+  @IsNotEmpty()
+  province!: string;
+
+  @IsNotEmpty()
+  role!: string;
 }

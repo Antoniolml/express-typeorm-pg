@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../config/base.entity';
 import { ProductEntity } from './product.entity';
 
@@ -7,6 +7,6 @@ export class CategoryEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true })
   name!: string;
 
-  @ManyToMany(() => ProductEntity, (product) => product.categories)
+  @OneToMany(() => ProductEntity, (product) => product.category)
   products!: ProductEntity[];
 }

@@ -9,6 +9,7 @@ import {
 import { BrandEntity } from './brand.entity';
 import { CategoryEntity } from './category.entity';
 import { BaseEntity } from '../../config/base.entity';
+import { OrderItemEntity } from '../../users/entities/order-item.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity extends BaseEntity {
@@ -31,15 +32,10 @@ export class ProductEntity extends BaseEntity {
   @JoinColumn({ name: 'brand_id' })
   brand!: BrandEntity;
 
-  @ManyToMany(() => CategoryEntity, (category) => category.products)
-  @JoinTable({
-    name: 'product_categories',
-    joinColumn: {
-      name: 'product_id',
-    },
-    inverseJoinColumn: {
-      name: 'category_id',
-    },
-  })
-  categories!: CategoryEntity[];
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinTable({ name: 'category_id' })
+  category!: CategoryEntity;
+
+  @ManyToMany(() => OrderItemEntity, (OrderItem) => OrderItem.product)
+  orderItems!: OrderItemEntity[];
 }

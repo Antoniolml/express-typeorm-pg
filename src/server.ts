@@ -6,6 +6,10 @@ import { ConfigServer } from './config/config';
 import { DataSource } from 'typeorm';
 import { CategoryRouter } from './products/category.router';
 import { BrandRouter } from './products/brand.router';
+import { CustomerRouter } from './users/customer.router';
+import { OrderRouter } from './users/order.router';
+import { OrderItemRouter } from './users/order-item.router';
+import { UserRouter } from './users/user.router';
 
 class ServerBoosrap extends ConfigServer {
   public app: express.Application = express();
@@ -30,6 +34,10 @@ class ServerBoosrap extends ConfigServer {
       new ProductRouter().router,
       new CategoryRouter().router,
       new BrandRouter().router,
+      new CustomerRouter().router,
+      new OrderRouter().router,
+      new OrderItemRouter().router,
+      new UserRouter().router,
     ];
   }
 

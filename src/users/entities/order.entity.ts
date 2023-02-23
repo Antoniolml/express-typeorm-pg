@@ -1,13 +1,20 @@
-import { Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../config/base.entity';
 import { CustomerEntity } from './customer.entity';
 import { OrderItemEntity } from './order-item.entity';
 
 @Entity({ name: 'orders' })
 export class OrderEntity extends BaseEntity {
-  @ManyToMany(() => CustomerEntity, (customer) => customer.order)
+  @Column()
+  status!: string;
+
+  @Column()
+  paymentMethod!: string;
+
+  @ManyToOne(() => CustomerEntity, (customer) => customer.order)
+  @JoinColumn({ name: 'customer_id' })
   customer!: CustomerEntity;
 
-  @ManyToMany(() => OrderItemEntity, (item) => item.order)
-  items!: OrderItemEntity[];
+  @OneToMany(() => OrderItemEntity, (item) => item.order)
+  Orderitems!: OrderItemEntity[];
 }

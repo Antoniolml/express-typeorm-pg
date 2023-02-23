@@ -35,7 +35,6 @@ export class ProductDTO extends BaseDto {
   @IsNotEmpty()
   brand!: BrandEntity;
 
-  @IsArray()
   @IsNotEmpty()
-  categories!: CategoryEntity[];
+  category!: CategoryEntity;
 }

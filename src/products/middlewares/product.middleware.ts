@@ -4,7 +4,7 @@ import { ProductDTO } from '../dtos/product.dto';
 
 export class ProductMiddleware {
   productValidator(req: Request, res: Response, next: NextFunction) {
-    const { name, description, price, stock, image, brand, categories } =
+    const { name, description, price, stock, image, brand, category } =
       req.body;
 
     const valid = new ProductDTO();
@@ -14,10 +14,11 @@ export class ProductMiddleware {
     valid.stock = stock;
     valid.image = image;
     valid.brand = brand;
-    valid.categories = categories;
+    valid.category = category;
 
     validate(valid).then((err) => {
       if (err.length > 0) {
+        console.log(err);
         res.status(400).json({ message: 'Invalid data' });
       } else {
         next();
