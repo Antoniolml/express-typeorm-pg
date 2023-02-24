@@ -1,19 +1,23 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { HttpResponse } from '../../shared/response/http.response';
 import { OdererService } from '../services/order.service';
 
 export class OrderController {
   constructor(
-    private readonly orderService: OdererService = new OdererService()
+    private readonly orderService: OdererService = new OdererService(),
+    private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
 
   async GetOrders(_req: Request, res: Response) {
     try {
       const Orders = await this.orderService.findAllOrders();
-      res.status(200).json(Orders);
+      if (!Orders.length) {
+        return this.httpResponse.NoContent(res);
+      }
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -22,22 +26,24 @@ export class OrderController {
     try {
       const Order = await this.orderService.findOrderById(id);
       if (!Order) {
-        res.status(404).json({ message: 'Order not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'Order not found',
+        });
       }
-      res.status(200).json(Order);
+      return this.httpResponse.OK(res, Order);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
   async CreateOrder(_req: Request, res: Response) {
     try {
       const newOrder = await this.orderService.createOrder(_req.body);
-      res.status(201).json(newOrder);
+      return this.httpResponse.Created(res, newOrder);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -49,12 +55,14 @@ export class OrderController {
         _req.body
       );
       if (!Order.affected) {
-        res.status(404).json({ message: 'Order not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'Order updated' });
+      return this.httpResponse.OK(res, Order);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -63,12 +71,14 @@ export class OrderController {
     try {
       const Order: DeleteResult = await this.orderService.deleteOrder(id);
       if (!Order.affected) {
-        res.status(404).json({ message: 'Order not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'Order not found',
+        });
       }
-      res.status(200).json({ message: 'Order deleted' });
+      return this.httpResponse.OK(res, Order);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 }

@@ -1,19 +1,24 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { HttpResponse } from '../../shared/response/http.response';
 import { CategoryService } from '../services/category.service';
 
 export class CategoryController {
   constructor(
-    private readonly categoryService: CategoryService = new CategoryService()
+    private readonly categoryService: CategoryService = new CategoryService(),
+    private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
 
   async GetCategories(_req: Request, res: Response) {
     try {
       const categories = await this.categoryService.findAllCategories();
-      res.status(200).json(categories);
+      if (!categories.length) {
+        return this.httpResponse.NoContent(res);
+      }
+      return this.httpResponse.OK(res, categories);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -22,22 +27,24 @@ export class CategoryController {
     try {
       const category = await this.categoryService.findCategoryById(id);
       if (!category) {
-        res.status(404).json({ message: 'category not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'category not found',
+        });
       }
-      res.status(200).json(category);
+      return this.httpResponse.OK(res, category);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
   async CreateCategory(_req: Request, res: Response) {
     try {
       const newCategory = await this.categoryService.createCategory(_req.body);
-      res.status(201).json(newCategory);
+      return this.httpResponse.Created(res, newCategory);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -49,12 +56,14 @@ export class CategoryController {
         _req.body
       );
       if (!category.affected) {
-        res.status(404).json({ message: 'category not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'category updated' });
+      return this.httpResponse.OK(res, category);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -65,12 +74,14 @@ export class CategoryController {
         id
       );
       if (!category.affected) {
-        res.status(404).json({ message: 'category not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'category deleted' });
+      return this.httpResponse.OK(res, category);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 }

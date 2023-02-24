@@ -1,19 +1,24 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { HttpResponse } from '../../shared/response/http.response';
 import { ProductService } from '../services/product.service';
 
 export class ProductController {
   constructor(
-    private readonly productService: ProductService = new ProductService()
+    private readonly productService: ProductService = new ProductService(),
+    private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
 
   async GetProducts(_req: Request, res: Response) {
     try {
       const products = await this.productService.findAllProducts();
-      res.status(200).json(products);
+      if (!products.length) {
+        return this.httpResponse.NoContent(res);
+      }
+      return this.httpResponse.OK(res, products);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -22,22 +27,24 @@ export class ProductController {
     try {
       const product = await this.productService.findProductById(id);
       if (!product) {
-        res.status(404).json({ message: 'Product not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'Product not found',
+        });
       }
-      res.status(200).json(product);
+      return this.httpResponse.OK(res, product);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
   async CreateProduct(_req: Request, res: Response) {
     try {
       const newProduct = await this.productService.createProduct(_req.body);
-      res.status(201).json(newProduct);
+      return this.httpResponse.Created(res, newProduct);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -49,12 +56,14 @@ export class ProductController {
         _req.body
       );
       if (!product.affected) {
-        res.status(404).json({ message: 'Product not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'Product updated' });
+      return this.httpResponse.OK(res, product);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -63,9 +72,11 @@ export class ProductController {
     try {
       const product: DeleteResult = await this.productService.deleteProduct(id);
       if (!product.affected) {
-        res.status(404).json({ message: 'Product not found' });
+        return this.httpResponse.NotFound(res, {
+          message: "Product doesn't exist",
+        });
       }
-      res.status(200).json({ message: 'Product deleted' });
+      return this.httpResponse.OK(res, product);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Internal server error' });

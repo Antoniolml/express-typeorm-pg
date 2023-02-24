@@ -1,17 +1,24 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { HttpResponse } from '../../shared/response/http.response';
 import { UserService } from '../services/user.service';
 
 export class userController {
-  constructor(private readonly userService: UserService = new UserService()) {}
+  constructor(
+    private readonly userService: UserService = new UserService(),
+    private readonly httpResponse: HttpResponse = new HttpResponse()
+  ) {}
 
   async GetUsers(_req: Request, res: Response) {
     try {
       const Users = await this.userService.findAllUsers();
-      res.status(200).json(Users);
+      if (!Users.length) {
+        return this.httpResponse.NoContent(res);
+      }
+      return this.httpResponse.OK(res, Users);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -20,22 +27,24 @@ export class userController {
     try {
       const User = await this.userService.findUserById(id);
       if (!User) {
-        res.status(404).json({ message: 'User not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'User not found',
+        });
       }
-      res.status(200).json(User);
+      return this.httpResponse.OK(res, User);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
   async CreateUser(_req: Request, res: Response) {
     try {
       const newUser = await this.userService.createUser(_req.body);
-      res.status(201).json(newUser);
+      return this.httpResponse.Created(res, newUser);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -47,12 +56,14 @@ export class userController {
         _req.body
       );
       if (!User.affected) {
-        res.status(404).json({ message: 'User not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'User updated' });
+      return this.httpResponse.OK(res, User);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -61,12 +72,14 @@ export class userController {
     try {
       const User: DeleteResult = await this.userService.deleteUser(id);
       if (!User.affected) {
-        res.status(404).json({ message: 'User not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error deleting',
+        });
       }
-      res.status(200).json({ message: 'User deleted' });
+      return this.httpResponse.OK(res, User);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 }

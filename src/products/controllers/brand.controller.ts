@@ -1,19 +1,25 @@
 import { Request, Response } from 'express';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { HttpResponse } from '../../shared/response/http.response';
 import { BrandService } from '../services/brand.service';
 
 export class BrandController {
   constructor(
-    private readonly brandService: BrandService = new BrandService()
+    private readonly brandService: BrandService = new BrandService(),
+    private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
 
   async GetBrands(_req: Request, res: Response) {
     try {
       const Brands = await this.brandService.findAllBrands();
-      res.status(200).json(Brands);
+
+      if (!Brands.length) {
+        return this.httpResponse.NoContent(res);
+      }
+      return this.httpResponse.OK(res, Brands);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -22,22 +28,22 @@ export class BrandController {
     try {
       const Brand = await this.brandService.findBrandsById(id);
       if (!Brand) {
-        res.status(404).json({ message: 'Brand not found' });
+        return this.httpResponse.NotFound(res, { message: 'Brand not found' });
       }
-      res.status(200).json(Brand);
+      return this.httpResponse.OK(res, Brand);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
   async CreateBrand(_req: Request, res: Response) {
     try {
       const newBrand = await this.brandService.createBrands(_req.body);
-      res.status(201).json(newBrand);
+      return this.httpResponse.Created(res, newBrand);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -49,12 +55,14 @@ export class BrandController {
         _req.body
       );
       if (!Brand.affected) {
-        res.status(404).json({ message: 'Brand not found' });
+        return this.httpResponse.NotFound(res, {
+          message: 'There is an error updating',
+        });
       }
-      res.status(200).json({ message: 'Brand updated' });
+      return this.httpResponse.OK(res, Brand);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 
@@ -63,12 +71,12 @@ export class BrandController {
     try {
       const Brand: DeleteResult = await this.brandService.deleteBrands(id);
       if (!Brand.affected) {
-        res.status(404).json({ message: 'Brand not found' });
+        return this.httpResponse.NotFound(res, { message: 'Brand not found' });
       }
-      res.status(200).json({ message: 'Brand deleted' });
+      return this.httpResponse.OK(res, Brand);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return this.httpResponse.InternalServerError(res, error);
     }
   }
 }
