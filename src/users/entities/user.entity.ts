@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../config/base.entity';
+import { RoleType } from '../dtos/user.dto';
 import { CustomerEntity } from './customer.entity';
 
 @Entity({ name: 'users' })
@@ -25,8 +26,8 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   province!: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  role!: string;
+  @Column({ type: 'enum', enum: RoleType, nullable: false })
+  role!: RoleType;
 
   @OneToOne(() => CustomerEntity, (customer) => customer.user)
   customer!: CustomerEntity;

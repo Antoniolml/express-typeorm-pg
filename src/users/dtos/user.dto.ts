@@ -28,5 +28,11 @@ export class UserDTO extends BaseDto {
   province!: string;
 
   @IsNotEmpty()
-  role!: string;
+  role!: RoleType;
+}
+
+export enum RoleType {
+  USER = 'USER',
+  CUSTOMER = 'CUSTOMER',
+  ADMIN = 'ADMIN',
 }

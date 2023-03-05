@@ -5,6 +5,7 @@ import { CustomerDTO } from '../dtos/customer.dto';
 import * as bcrypt from 'bcrypt';
 
 import { UserEntity } from '../entities/user.entity';
+import { RoleType } from '../dtos/user.dto';
 
 export class UserService extends BaseService<UserEntity> {
   constructor() {
@@ -17,6 +18,19 @@ export class UserService extends BaseService<UserEntity> {
 
   async findUserById(id: string): Promise<UserEntity | null> {
     return (await this.execRepository).findOneBy({ id });
+  }
+
+  async findUserWithRole(
+    id: string,
+    role: RoleType
+  ): Promise<UserEntity | null> {
+    const user = (await this.execRepository)
+      .createQueryBuilder('user')
+      .where({ id })
+      .andWhere({ role })
+      .getOne();
+
+    return user;
   }
 
   async findUserByEmail(email: string): Promise<UserEntity | null> {
